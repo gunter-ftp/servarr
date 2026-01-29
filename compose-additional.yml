@@ -49,11 +49,18 @@ services:
       - STASH_METADATA=/metadata/
       - STASH_CACHE=/cache/
     volumes:
+      ## Keep configs, scrapers, and plugins here.
       - ${DOCKERCONFDIR}/stash:/root/.stash
-      - ${DOCKERCONFDIR}/stash/config:/config
+      ## Point this at your collection.
+      ## The left side is where your collection is on your host, the right side is where it will be in stash.
       - ${DOCKERDATADIR}/media:/data
+      ## This is where your stash's metadata lives
       - ${DOCKERCONFDIR}/stash/metadata:/metadata
+      ## Any other cache content.
       - ${DOCKERCONFDIR}/stash/cache:/cache
+      ## Where to store binary blob data (scene covers, images)
+      - ${DOCKERCONFDIR}/stash/blobs:/blobs
+      ## Where to store generated content (screenshots,previews,transcodes,sprites)
       - ${DOCKERCONFDIR}/stash/generated:/generated
     networks:
       media_network:
