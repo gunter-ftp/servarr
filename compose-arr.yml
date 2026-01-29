@@ -85,7 +85,7 @@ services:
 
   # FlareSolverr - Cloudflare bypass for Prowlarr
   flaresolverr:
-    image: flaresolverr/flaresolverr:latest
+    image: ghcr.io/flaresolverr/flaresolverr:latest
     container_name: flaresolverr
     hostname: flaresolverr
     environment:
