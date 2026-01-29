@@ -76,3 +76,20 @@ services:
     ports:
       - 6767:6767
     restart: unless-stopped
+
+  # FlareSolverr - Cloudflare bypass for Prowlarr
+  flaresolverr:
+    image: flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    hostname: flaresolverr
+    environment:
+      - LOG_LEVEL=info
+      - LOG_HTML=false
+      - CAPTCHA_SOLVER=none
+      - TZ=${TZ}
+    networks:
+      media_network:
+        ipv4_address: 172.20.0.14
+    ports:
+      - 8191:8191
+    restart: unless-stopped
