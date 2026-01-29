@@ -1,0 +1,35 @@
+version: "3.8"
+
+# Main Docker Compose File for Media Server Stack
+#
+# This setup includes:
+# - Gluetun VPN (NordVPN connected to Serbia)
+# - qBittorrent (routed through VPN)
+# - Sonarr, Radarr, Prowlarr, Bazarr (Arr stack)
+# - Overseerr with Cloudflare Tunnel
+# - Stash, Cleanuparr, Huntarr
+#
+# Data Structure:
+# - Media: /volume1/data/media
+# - Torrents: /volume1/data/torrents
+# - App Config: /volume1/docker/appdata
+#
+# Usage:
+# 1. Edit .env file with your configuration
+# 2. Create network: docker network create media_network --subnet 172.20.0.0/16 --gateway 172.20.0.1
+# 3. Create directories: See README.md
+# 4. Start all services: docker-compose up -d
+# 5. Or start specific groups:
+#    docker-compose -f docker-compose.yml -f compose-vpn.yml up -d
+#    docker-compose -f docker-compose.yml -f compose-arr.yml up -d
+#    docker-compose -f docker-compose.yml -f compose-additional.yml up -d
+
+networks:
+  media_network:
+    external: true
+
+# Include all service groups
+include:
+  - compose-vpn.yml
+  - compose-arr.yml
+  - compose-additional.yml

@@ -1,0 +1,82 @@
+version: "3.8"
+
+# Arr Stack - Media Management Services
+services:
+  # Prowlarr - Indexer manager
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:${PROWLARR_VERSION:-latest}
+    container_name: prowlarr
+    hostname: prowlarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${DOCKERCONFDIR}/prowlarr:/config
+    networks:
+      media_network:
+        ipv4_address: 172.20.0.10
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+
+  # Sonarr - TV Show management
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:${SONARR_VERSION:-latest}
+    container_name: sonarr
+    hostname: sonarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${DOCKERCONFDIR}/sonarr:/config
+      - ${DOCKERDATADIR}:/data
+    networks:
+      media_network:
+        ipv4_address: 172.20.0.11
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+
+  # Radarr - Movie management
+  radarr:
+    image: lscr.io/linuxserver/radarr:${RADARR_VERSION:-latest}
+    container_name: radarr
+    hostname: radarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${DOCKERCONFDIR}/radarr:/config
+      - ${DOCKERDATADIR}:/data
+    networks:
+      media_network:
+        ipv4_address: 172.20.0.12
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+
+  # Bazarr - Subtitle management
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:${BAZARR_VERSION:-latest}
+    container_name: bazarr
+    hostname: bazarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${DOCKERCONFDIR}/bazarr:/config
+      - ${DOCKERDATADIR}/media:/data/media
+    networks:
+      media_network:
+        ipv4_address: 172.20.0.13
+    ports:
+      - 6767:6767
+    restart: unless-stopped
+
+networks:
+  media_network:
+    external: true

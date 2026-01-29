@@ -1,0 +1,102 @@
+version: "3.8"
+
+# Additional Services - Overseerr, Stash, Cleanuparr, Huntarr
+services:
+  # Overseerr - Media request management with Cloudflare Tunnel
+  overseerr:
+    image: lscr.io/linuxserver/overseerr:${OVERSEERR_VERSION:-latest}
+    container_name: overseerr
+    hostname: overseerr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${DOCKERCONFDIR}/overseerr:/config
+    networks:
+      media_network:
+        ipv4_address: 172.20.0.20
+    ports:
+      - 5055:5055
+    restart: unless-stopped
+
+  # Cloudflare Tunnel for Overseerr external access
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    hostname: cloudflared
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    networks:
+      media_network:
+        ipv4_address: 172.20.0.21
+    restart: unless-stopped
+    depends_on:
+      - overseerr
+
+  # Stash - Media organizer and manager
+  stash:
+    image: stashapp/stash:${STASH_VERSION:-latest}
+    container_name: stash
+    hostname: stash
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - STASH_STASH=/data/
+      - STASH_GENERATED=/generated/
+      - STASH_METADATA=/metadata/
+      - STASH_CACHE=/cache/
+    volumes:
+      - ${DOCKERCONFDIR}/stash:/root/.stash
+      - ${DOCKERCONFDIR}/stash/config:/config
+      - ${DOCKERDATADIR}/media:/data
+      - ${DOCKERCONFDIR}/stash/metadata:/metadata
+      - ${DOCKERCONFDIR}/stash/cache:/cache
+      - ${DOCKERCONFDIR}/stash/generated:/generated
+    networks:
+      media_network:
+        ipv4_address: 172.20.0.22
+    ports:
+      - 9999:9999
+    restart: unless-stopped
+
+  # Cleanuparr - Cleanup tool for arr apps
+  cleanuparr:
+    image: linuxserver/cleanuparr:latest
+    container_name: cleanuparr
+    hostname: cleanuparr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${DOCKERCONFDIR}/cleanuparr:/config
+      - ${DOCKERDATADIR}:/data
+    networks:
+      media_network:
+        ipv4_address: 172.20.0.23
+    restart: unless-stopped
+
+  # Huntarr - Torrent tracker manager
+  huntarr:
+    image: hotio/huntarr:latest
+    container_name: huntarr
+    hostname: huntarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${DOCKERCONFDIR}/huntarr:/config
+    networks:
+      media_network:
+        ipv4_address: 172.20.0.24
+    ports:
+      - 8088:8088
+    restart: unless-stopped
+
+networks:
+  media_network:
+    external: true

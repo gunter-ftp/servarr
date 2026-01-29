@@ -1,0 +1,58 @@
+version: "3.8"
+
+# VPN and Download Client Services
+services:
+  # Gluetun VPN Client - All traffic routes through NordVPN
+  gluetun:
+    image: qmcgaw/gluetun:${GLUETUN_VERSION:-latest}
+    container_name: gluetun
+    hostname: gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - 8888:8888/tcp # HTTP proxy
+      - 8388:8388/tcp # Shadowsocks
+      - 8388:8388/udp # Shadowsocks
+      - 8090:8090     # qBittorrent WebUI
+      - 6881:6881     # qBittorrent
+      - 6881:6881/udp # qBittorrent
+    volumes:
+      - ${DOCKERCONFDIR}/gluetun:/gluetun
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER}
+      - VPN_TYPE=${VPN_TYPE}
+      - OPENVPN_USER=${OPENVPN_USER}
+      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
+      - SERVER_COUNTRIES=${SERVER_COUNTRIES}
+      - FIREWALL_OUTBOUND_SUBNETS=${NETWORK_SUBNET}
+    networks:
+      media_network:
+        ipv4_address: 172.20.0.2
+    restart: unless-stopped
+
+  # qBittorrent - Download client (routes through Gluetun VPN)
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:${QBITTORRENT_VERSION:-latest}
+    container_name: qbittorrent
+    hostname: qbittorrent
+    network_mode: "service:gluetun"
+    depends_on:
+      - gluetun
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - WEBUI_PORT=8090
+    volumes:
+      - ${DOCKERCONFDIR}/qbittorrent:/config
+      - ${DOCKERDATADIR}/torrents:/data/torrents
+    restart: unless-stopped
+
+networks:
+  media_network:
+    external: true
