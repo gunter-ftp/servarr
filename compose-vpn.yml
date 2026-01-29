@@ -29,15 +29,21 @@ services:
       - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
       - SERVER_COUNTRIES=${SERVER_COUNTRIES}
       - FIREWALL_OUTBOUND_SUBNETS=${NETWORK_SUBNET}
+      # HTTP Proxy settings
       - HTTPPROXY=on
       - HTTPPROXY_LOG=on
+      # DNS settings - critical for VPN to work
+      - DOT=off
+      - DNS_KEEP_NAMESERVER=off
+      - DNS_ADDRESS=1.1.1.1
+      # Firewall settings
       - FIREWALL=on
+      - FIREWALL_VPN_INPUT_PORTS=8090
+      # Health check
+      - HEALTH_VPN_DURATION_INITIAL=30s
     networks:
       media_network:
         ipv4_address: 172.20.0.2
-    dns:
-      - 1.1.1.1
-      - 1.0.0.1
     restart: unless-stopped
 
   # qBittorrent - Download client (routes through Gluetun VPN)
