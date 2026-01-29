@@ -33,6 +33,9 @@ mkdir -p /volume1/data/media/{movies,tv,music}
 # Create appdata directories
 mkdir -p /volume2/docker/appdata/{gluetun,qbittorrent,prowlarr,sonarr,radarr,bazarr,overseerr,stash,cleanuparr,huntarr}
 
+# Create stash directories
+mkdir -p /volume2/docker/appdata/stash/{metadata,cache,blobs,generated}
+
 echo -e "${GREEN}✓ Directories created${NC}"
 
 echo ""
