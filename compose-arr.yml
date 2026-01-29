@@ -11,11 +11,11 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-      # Proxy configuration
-      - PROWLARR__PROXY__ENABLED=true
-      - PROWLARR__PROXY__TYPE=http
-      - PROWLARR__PROXY__HOSTNAME=gluetun
-      - PROWLARR__PROXY__PORT=8888
+      # HTTP Proxy configuration (routes indexer searches through VPN)
+      - HTTP_PROXY=http://gluetun:8888
+      - HTTPS_PROXY=http://gluetun:8888
+      # Bypass proxy for internal services
+      - NO_PROXY=gluetun,qbittorrent,sonarr,radarr,bazarr,overseerr,flaresolverr,localhost,127.0.0.1,172.20.0.0/16
     volumes:
       - ${DOCKERCONFDIR}/prowlarr:/config
     networks:
