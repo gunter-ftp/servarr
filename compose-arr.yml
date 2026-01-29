@@ -76,7 +76,3 @@ services:
     ports:
       - 6767:6767
     restart: unless-stopped
-
-networks:
-  media_network:
-    external: true

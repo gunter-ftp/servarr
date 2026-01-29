@@ -52,7 +52,3 @@ services:
       - ${DOCKERCONFDIR}/qbittorrent:/config
       - ${DOCKERDATADIR}/torrents:/data/torrents
     restart: unless-stopped
-
-networks:
-  media_network:
-    external: true
