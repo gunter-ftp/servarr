@@ -22,7 +22,35 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-echo -e "${YELLOW}Step 1: Creating directory structure...${NC}"
+echo -e "${YELLOW}Step 1: Loading TUN kernel module for VPN...${NC}"
+
+# Check if TUN module is loaded
+if lsmod | grep -q "^tun"; then
+    echo -e "${GREEN}✓ TUN module already loaded${NC}"
+else
+    echo "Loading TUN module..."
+    modprobe tun
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}✓ TUN module loaded${NC}"
+    else
+        echo -e "${RED}✗ Failed to load TUN module${NC}"
+        exit 1
+    fi
+fi
+
+# Create TUN device if it doesn't exist
+if [ ! -c /dev/net/tun ]; then
+    echo "Creating /dev/net/tun device..."
+    mkdir -p /dev/net
+    mknod /dev/net/tun c 10 200
+    chmod 0666 /dev/net/tun
+    echo -e "${GREEN}✓ TUN device created${NC}"
+else
+    echo -e "${GREEN}✓ TUN device exists${NC}"
+fi
+
+echo ""
+echo -e "${YELLOW}Step 2: Creating directory structure...${NC}"
 
 # Create torrent directories
 mkdir -p /volume1/data/torrents/{movies,tv,music}
@@ -39,7 +67,7 @@ mkdir -p /volume2/docker/appdata/stash/{metadata,cache,blobs,generated}
 echo -e "${GREEN}✓ Directories created${NC}"
 
 echo ""
-echo -e "${YELLOW}Step 2: Setting permissions...${NC}"
+echo -e "${YELLOW}Step 3: Setting permissions...${NC}"
 
 # Set ownership (change 'docker' if you used a different username)
 chown -R docker:users /volume1/data /volume2/docker
@@ -50,7 +78,7 @@ chmod -R a=,a+rX,u+w,g+w /volume1/data /volume2/docker
 echo -e "${GREEN}✓ Permissions set${NC}"
 
 echo ""
-echo -e "${YELLOW}Step 3: Checking for Docker network...${NC}"
+echo -e "${YELLOW}Step 4: Checking for Docker network...${NC}"
 
 # Check if network exists
 if docker network inspect media_network &>/dev/null; then
@@ -69,13 +97,10 @@ echo "Setup Complete!"
 echo "===================================${NC}"
 echo ""
 echo "Next steps:"
-echo "1. Copy docker-compose files to /volume2/docker/appdata/"
-echo "2. Edit .env file with your configuration:"
-echo "   - PUID and PGID (run 'id docker' to find)"
-echo "   - NordVPN credentials"
-echo "   - Cloudflare Tunnel token"
-echo "   - Timezone"
-echo "3. Navigate to /volume2/docker/appdata/"
-echo "4. Run: docker-compose up -d"
+echo "1. Edit .env file with your configuration"
+echo "2. Run: docker-compose up -d"
+echo ""
+echo -e "${YELLOW}Note: TUN module may need to be reloaded after reboot${NC}"
+echo -e "${YELLOW}To make TUN persistent, add '/sbin/modprobe tun' to a startup script${NC}"
 echo ""
 echo -e "${YELLOW}For detailed instructions, see README.md${NC}"
