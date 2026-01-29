@@ -32,7 +32,6 @@ services:
       - FIREWALL_OUTBOUND_SUBNETS=${NETWORK_SUBNET}
       # DNS Configuration
       - DOT=off
-      - DNS_ADDRESS=1.1.1.1,1.0.0.1
       # Allow VPN traffic through firewall
       - FIREWALL_VPN_INPUT_PORTS=9696,8090
       # Health check
