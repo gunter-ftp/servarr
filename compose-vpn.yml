@@ -30,13 +30,20 @@ services:
       - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
       - SERVER_COUNTRIES=${SERVER_COUNTRIES}
       - FIREWALL_OUTBOUND_SUBNETS=${NETWORK_SUBNET}
+      # DNS Configuration
+      - DOT=off
+      - DNS_KEEP_NAMESERVER=on
+      # Allow VPN traffic through firewall
+      - FIREWALL_VPN_INPUT_PORTS=9696
+      # Health check
+      - HEALTH_VPN_DURATION_INITIAL=30s
     networks:
       media_network:
         ipv4_address: 172.20.0.2
     restart: unless-stopped
 
   # qBittorrent - Download client (routes through Gluetun VPN)
-  # Access via: http://gluetun:8090 (shares Gluetun's network)
+  # Access via: http://192.168.0.6:8090 or http://gluetun:8090 (from other containers)
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:${QBITTORRENT_VERSION:-latest}
     container_name: qbittorrent
