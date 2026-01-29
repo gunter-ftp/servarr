@@ -31,7 +31,7 @@ mkdir -p /volume1/data/torrents/{movies,tv,music}
 mkdir -p /volume1/data/media/{movies,tv,music}
 
 # Create appdata directories
-mkdir -p /volume1/docker/appdata/{gluetun,qbittorrent,prowlarr,sonarr,radarr,bazarr,overseerr,stash,cleanuparr,huntarr}
+mkdir -p /volume2/docker/appdata/{gluetun,qbittorrent,prowlarr,sonarr,radarr,bazarr,overseerr,stash,cleanuparr,huntarr}
 
 echo -e "${GREEN}✓ Directories created${NC}"
 
@@ -39,10 +39,10 @@ echo ""
 echo -e "${YELLOW}Step 2: Setting permissions...${NC}"
 
 # Set ownership (change 'docker' if you used a different username)
-chown -R docker:users /volume1/data /volume1/docker
+chown -R docker:users /volume1/data /volume2/docker
 
 # Set permissions
-chmod -R a=,a+rX,u+w,g+w /volume1/data /volume1/docker
+chmod -R a=,a+rX,u+w,g+w /volume1/data /volume2/docker
 
 echo -e "${GREEN}✓ Permissions set${NC}"
 
@@ -66,13 +66,13 @@ echo "Setup Complete!"
 echo "===================================${NC}"
 echo ""
 echo "Next steps:"
-echo "1. Copy docker-compose files to /volume1/docker/appdata/"
+echo "1. Copy docker-compose files to /volume2/docker/appdata/"
 echo "2. Edit .env file with your configuration:"
 echo "   - PUID and PGID (run 'id docker' to find)"
 echo "   - NordVPN credentials"
 echo "   - Cloudflare Tunnel token"
 echo "   - Timezone"
-echo "3. Navigate to /volume1/docker/appdata/"
+echo "3. Navigate to /volume2/docker/appdata/"
 echo "4. Run: docker-compose up -d"
 echo ""
 echo -e "${YELLOW}For detailed instructions, see README.md${NC}"
