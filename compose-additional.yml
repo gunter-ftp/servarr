@@ -64,7 +64,7 @@ services:
 
   # Cleanuparr - Cleanup tool for arr apps
   cleanuparr:
-    image: linuxserver/cleanuparr:latest
+    image: ghcr.io/cleanuparr/cleanuparr:latest
     container_name: cleanuparr
     hostname: cleanuparr
     environment:
@@ -81,7 +81,7 @@ services:
 
   # Huntarr - Torrent tracker manager
   huntarr:
-    image: hotio/huntarr:latest
+    image: ghcr.io/plexguide/huntarr:latest
     container_name: huntarr
     hostname: huntarr
     environment:
