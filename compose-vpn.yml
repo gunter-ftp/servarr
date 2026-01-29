@@ -18,6 +18,7 @@ services:
       - 8090:8090     # qBittorrent WebUI (accessed via gluetun hostname)
       - 6881:6881     # qBittorrent
       - 6881:6881/udp # qBittorrent
+      - 9696:9696     # Prowlarr
     volumes:
       - ${DOCKERCONFDIR}/gluetun:/gluetun
     environment:

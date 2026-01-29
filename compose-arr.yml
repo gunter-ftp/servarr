@@ -2,22 +2,20 @@ version: "3.8"
 
 # Arr Stack - Media Management Services
 services:
-  # Prowlarr - Indexer manager
+  # Prowlarr - Indexer manager (routes through Gluetun VPN)
+  # Access via: http://gluetun:9696 (shares Gluetun's network)
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:${PROWLARR_VERSION:-latest}
     container_name: prowlarr
-    hostname: prowlarr
+    network_mode: "service:gluetun"
+    depends_on:
+      - gluetun
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
       - ${DOCKERCONFDIR}/prowlarr:/config
-    networks:
-      media_network:
-        ipv4_address: 172.20.0.10
-    ports:
-      - 9696:9696
     restart: unless-stopped
 
   # Sonarr - TV Show management
