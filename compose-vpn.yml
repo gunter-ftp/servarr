@@ -32,7 +32,6 @@ services:
       - HTTPPROXY=on
       - HTTPPROXY_LOG=on
       - FIREWALL=on
-      - TZ=${TZ}
     networks:
       media_network:
         ipv4_address: 172.20.0.2
