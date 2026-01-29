@@ -29,12 +29,10 @@ services:
       - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
       - SERVER_COUNTRIES=${SERVER_COUNTRIES}
       - FIREWALL_OUTBOUND_SUBNETS=${NETWORK_SUBNET}
-      # DNS Configuration
-      - DOT=off
-      # Allow VPN traffic through firewall
-      - FIREWALL_VPN_INPUT_PORTS=8090
-      # Health check
-      - HEALTH_VPN_DURATION_INITIAL=30s
+      - HTTPPROXY=on
+      - HTTPPROXY_LOG=on
+      - FIREWALL=on
+      - TZ=${TZ}
     networks:
       media_network:
         ipv4_address: 172.20.0.2
