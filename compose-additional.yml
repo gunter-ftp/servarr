@@ -84,6 +84,8 @@ services:
     networks:
       media_network:
         ipv4_address: 172.20.0.23
+    ports:
+      - 11011:11011
     restart: unless-stopped
 
   # Huntarr - Torrent tracker manager
