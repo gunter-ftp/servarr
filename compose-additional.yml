@@ -53,7 +53,7 @@ services:
       - ${DOCKERCONFDIR}/stash:/root/.stash
       ## Point this at your collection.
       ## The left side is where your collection is on your host, the right side is where it will be in stash.
-      - ${DOCKERDATADIR}/media:/data
+      - ${DOCKERDATADIR}:/data
       ## This is where your stash's metadata lives
       - ${DOCKERCONFDIR}/stash/metadata:/metadata
       ## Any other cache content.
