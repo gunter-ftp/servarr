@@ -97,11 +97,12 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
+      - PORT=9705
     volumes:
       - ${DOCKERCONFDIR}/huntarr:/config
     networks:
       media_network:
         ipv4_address: 172.20.0.24
     ports:
-      - 8088:8088
+      - 9705:9705
     restart: unless-stopped
